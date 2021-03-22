@@ -16,9 +16,9 @@ String url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 VideoFormat[] format = ytdl.getFormats(url); /*With this you get every format. Every format has an extension like m4a or mp4 and a
                                               resolution like 720p, 360p etc.*/
 VideoFormat[] format = ytdl.getFormats(url, false, new Function1<VideoFormat, Boolean>() {
-            public Boolean invoke(VideoFormat videoFormat) {
-                return videoFormat.getFormat_note().equals("720p");
-            }
+     public Boolean invoke(VideoFormat videoFormat) {
+          return videoFormat.getFormat_note().equals("720p");
+     }
 }); //The second argument "removeDuplicates just removes the duplicates from the list. E.g. multiple 720p formats can be in the list.
             //In the third argument and the function invoke you can enter what the video format must be like. Like a filter
 VideoFormat format = ytdl.getFormat(url, "720p", null); //Here you can get first format which has the given resolution and extension (extension is nullable)
