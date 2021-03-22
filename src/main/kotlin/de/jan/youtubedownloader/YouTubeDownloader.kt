@@ -39,7 +39,6 @@ class YouTubeDownloader {
     fun getFormats(url: String): Array<VideoFormat> {
         val formats = arrayListOf<VideoFormat>()
         val json = JSONObject(execCmd(getYTDLBuilder(false, "--dump-json", url)))
-        println(json)
         for (any in json.getJSONArray("formats")) {
             val format = any as JSONObject
             formats.add(VideoFormat(format))

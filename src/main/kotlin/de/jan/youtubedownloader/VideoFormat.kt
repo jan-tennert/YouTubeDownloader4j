@@ -13,4 +13,8 @@ class VideoFormat(private val data: JSONObject) {
     val vcodec: String = data.getString("vcodec")
     val acodec: String = data.getString("acodec")
     val fileSize: VideoSize? = if(data.isNull("filesize")) null else VideoSize(data.getLong("filesize"))
+
+    override fun toString(): String {
+        return "$format_note | $extension"
+    }
 }
