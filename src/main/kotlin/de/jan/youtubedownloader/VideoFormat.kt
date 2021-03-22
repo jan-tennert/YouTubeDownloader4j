@@ -1,6 +1,5 @@
 package de.jan.youtubedownloader
 
-import de.jan.systemutils.VideoSize
 import org.json.JSONObject
 import java.net.URL
 
