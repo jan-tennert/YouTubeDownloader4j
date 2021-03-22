@@ -1,6 +1,5 @@
 package de.jan.youtubedownloader
 
-import java.io.File
 
 interface DownloadListener {
 

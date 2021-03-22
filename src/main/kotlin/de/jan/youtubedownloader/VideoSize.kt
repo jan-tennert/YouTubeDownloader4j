@@ -1,4 +1,4 @@
-package de.jan.systemutils
+package de.jan.youtubedownloader
 
 class VideoSize(val bytes: Long) {
 
