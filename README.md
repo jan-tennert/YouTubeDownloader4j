@@ -3,7 +3,7 @@ With this dependency you can download youtube, twitter, twitch videos etc. in ja
 
 # DISCLAIMER
 
-To use this dependency you __need__ [YouTube-DL](https://youtube-dl.org).\
+To use this dependency you __need__ [YouTube-DL](https://youtube-dl.org) in the path or you can set the custom executable with ytdl.setCustomYTDL().\
 For a few options you need [FFMPEG](https://www.ffmpeg.org) and/or [AtomicParsley](http://atomicparsley.sourceforge.net)
 
 # Demo
