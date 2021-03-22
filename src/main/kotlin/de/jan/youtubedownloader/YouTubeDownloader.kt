@@ -111,6 +111,7 @@ class YouTubeDownloader {
         var fileName: String? = null
             private set
         private var format: String? = null
+        private var downloadRate: String? = null
 
         fun directory(directory: File) : Builder {
             this.directory = directory
@@ -123,12 +124,20 @@ class YouTubeDownloader {
         }
 
         fun format(format: VideoFormat) : Builder {
-            this.format = format.id.toString()
+            this.format = format.id
             return this
         }
 
         fun highestQuality() : Builder {
             this.format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4"
+            return this
+        }
+
+        /**
+         * @param rate Can be like 20K = 20 Kilobyte or 20M = 20 Megabyte
+         */
+        fun downloadRate(rate: String) : Builder {
+            downloadRate = rate
             return this
         }
 
@@ -160,6 +169,10 @@ class YouTubeDownloader {
 
             format?.let {
                 options += " -f ${format!!} "
+            }
+
+            downloadRate?.let {
+                options += " -r ${downloadRate!!} "
             }
 
             options = options.replace("  ", " ")
