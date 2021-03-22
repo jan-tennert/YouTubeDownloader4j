@@ -151,7 +151,11 @@ class YouTubeDownloader {
             var options = ""
 
             fileName?.let {
-                options += " -o $fileName "
+                if(directory != null) {
+                    options += " -o ${File(directory, fileName!!).absolutePath} "
+                } else {
+                    options += " -o $fileName "
+                }
             }
 
             format?.let {
