@@ -50,6 +50,14 @@ ytdl.downloadPlaylist("playlist", new File("output/folder"), true /*audioOnly*/)
 //If you download videos with a higher resolution you have to download the audio and the video and then merge it with
 File fullvideo = ytdl.mergeVideoAndAudio(audioPath, videoPath, outputVideoPath) //This requires ffmpeg installed on the path or you can set it with
 ytdl.setCustomFFMPEGPath("path")
+
+
+//You can also get info for tweet videos, twitch videos, yt videos etc. with:
+ytdl.getYouTubeVideoInfo(url)
+ytdl.getTwitterVideoInfo(url)
+ytdl.getTwitchVideoInfo(url)
+
+//To get infos like: like count, dislike count, view count etc.
 ```
 
 # Installation
