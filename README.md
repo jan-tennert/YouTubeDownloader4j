@@ -45,7 +45,7 @@ File video = ytdl.downloadVideo(video, new DownloadListener() {
  });
 
 //You can download playlists with
-ytdl.downloadPlaylist("playlist", new File("output/folder"), true /*audioOnly/*)
+ytdl.downloadPlaylist("playlist", new File("output/folder"), true /*audioOnly*/)
 
 //If you download videos with a higher resolution you have to download the audio and the video and then merge it with
 File fullvideo = ytdl.mergeVideoAndAudio(audioPath, videoPath, outputVideoPath) //This requires ffmpeg installed on the path or you can set it with
