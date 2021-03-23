@@ -11,7 +11,7 @@ class YouTubeDownloader {
     private var youtubeDL: String = "youtube-dl"
     private var ffmpeg: String = "ffmpeg"
 
-    fun downloadVideo(video: Builder) : File? {
+    fun downloadVideo(video: Builder) : File {
         val download = video.build()
 
         val proc = getYTDLBuilder(true, *download.command.split(" ").toTypedArray())
@@ -24,8 +24,9 @@ class YouTubeDownloader {
     }
 
 
-    fun downloadVideo(video: Builder, listener: DownloadListener) {
-        val proc = getYTDLBuilder(false, *video.build().command.split(" ").toTypedArray())
+    fun downloadVideo(video: Builder, listener: DownloadListener) : File {
+        val download = video.build()
+        val proc = getYTDLBuilder(false, *download.command.split(" ").toTypedArray())
 
         val process = proc.start()
 
@@ -35,7 +36,8 @@ class YouTubeDownloader {
 
         process.waitFor()
 
-        listener.onFinish(video.build().file)
+        listener.onFinish(download.file)
+        return download.file
     }
 
     fun downloadPlaylist(url: String, output: File, audioOnly: Boolean) {
