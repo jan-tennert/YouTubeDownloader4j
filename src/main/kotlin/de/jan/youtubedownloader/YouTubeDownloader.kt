@@ -9,22 +9,24 @@ import java.util.*
 class YouTubeDownloader {
 
     private var youtubeDL: String = "youtube-dl"
+    private var ffmpeg: String = "ffmpeg"
 
-    fun downloadVideo(video: Builder) {
-        val proc = getYTDLBuilder(false, *video.build().split(" ").toTypedArray())
+    fun downloadVideo(video: Builder) : File {
+        val download = video.build()
+        val name = video.output
+        val proc = getYTDLBuilder(true, *download.command.split(" ").toTypedArray())
 
-        video.directory.also {
-            proc.directory(video.directory)
-        }
-        proc.start()
+        val process = proc.start()
+
+        process.waitFor()
+
+        return download.file
     }
 
-    fun downloadVideo(video: Builder, listener: DownloadListener) {
-        val proc = getYTDLBuilder(false, *video.build().split(" ").toTypedArray())
 
-        video.directory?.let {
-            proc.directory(video.directory)
-        }
+    fun downloadVideo(video: Builder, listener: DownloadListener) {
+        val proc = getYTDLBuilder(false, *video.build().command.split(" ").toTypedArray())
+
         val process = proc.start()
 
         val outBuffer = StringBuffer()
@@ -33,7 +35,7 @@ class YouTubeDownloader {
 
         process.waitFor()
 
-        listener.onFinish()
+        listener.onFinish(video.build().file)
     }
 
     fun getFormats(url: String): Array<VideoFormat> {
@@ -79,13 +81,21 @@ class YouTubeDownloader {
         youtubeDL = path
     }
 
-    fun getFilename(url: String) : String {
-        return JSONObject(execCmd(getYTDLBuilder(false, "--dump-json", url))).getString("_filename")
+    fun setCustomFFMPEGPath(path: String) {
+        validatePath(path)
+        ffmpeg = path
     }
 
     private fun execCmd(proc: ProcessBuilder): String {
         val s = Scanner(proc.start().inputStream).useDelimiter("\\A")
         return if (s.hasNext()) s.next() else ""
+    }
+
+    fun mergeVideoAndAudio(audio: String, video: String, output: String) : File {
+        ProcessBuilder()
+            .command("ffmpeg", "-i", video, "-i", audio, "-c:v", "copy", "-c:a", "aac", output)
+            .start().waitFor()
+        return File(output)
     }
 
     private fun getYTDLBuilder(output: Boolean, vararg args: String) : ProcessBuilder {
@@ -103,26 +113,20 @@ class YouTubeDownloader {
         }
     }
 
-    class Builder(val url: String) {
+    class Builder(private val url: String) {
 
-        var directory: File? = null
-            private set
-        var fileName: String? = null
-            private set
+        var output: File? = null
         private var format: String? = null
         private var downloadRate: String? = null
+        private var videoOnly: Boolean = true
 
-        fun directory(directory: File) : Builder {
-            this.directory = directory
+        fun output(path: String) : Builder {
+            output = File(path)
             return this
         }
 
-        fun fileName(name: String) : Builder {
-            fileName = name
-            return this
-        }
-
-        fun format(format: VideoFormat) : Builder {
+        fun format(format: VideoFormat, videoOnly: Boolean = true) : Builder {
+            this.videoOnly = videoOnly
             this.format = format.id
             return this
         }
@@ -144,6 +148,7 @@ class YouTubeDownloader {
          * If you want to add the thumbnail and metadata to the audio file you have to install ffmpeg and atomicparsley
          */
         fun onlyAudio(thumbnail: Boolean = false, metadata: Boolean = false) : Builder {
+            videoOnly = true
             this.format = "bestaudio[ext=m4a]"
 
             if(thumbnail) {
@@ -155,15 +160,11 @@ class YouTubeDownloader {
             return this
         }
 
-        fun build() : String {
+        fun build() : YouTubeDownload {
             var options = ""
 
-            fileName?.let {
-                if(directory != null) {
-                    options += " -o ${File(directory, fileName!!).absolutePath} "
-                } else {
-                    options += " -o $fileName "
-                }
+            output?.let {
+                options += " -o ${output!!.absolutePath}"
             }
 
             format?.let {
@@ -180,7 +181,7 @@ class YouTubeDownloader {
             }
 
             options += url
-            return options
+            return YouTubeDownload(options, videoOnly, output!!)
         }
 
     }
