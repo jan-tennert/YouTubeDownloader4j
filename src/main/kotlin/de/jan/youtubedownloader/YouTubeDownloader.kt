@@ -11,9 +11,9 @@ class YouTubeDownloader {
     private var youtubeDL: String = "youtube-dl"
     private var ffmpeg: String = "ffmpeg"
 
-    fun downloadVideo(video: Builder) : File {
+    fun downloadVideo(video: Builder) : File? {
         val download = video.build()
-        val name = video.output
+
         val proc = getYTDLBuilder(true, *download.command.split(" ").toTypedArray())
 
         val process = proc.start()
@@ -36,6 +36,18 @@ class YouTubeDownloader {
         process.waitFor()
 
         listener.onFinish(video.build().file)
+    }
+
+    fun downloadPlaylist(url: String, output: File, audioOnly: Boolean) {
+        val args = arrayListOf<String>()
+        if(audioOnly) {
+            args.addAll(listOf("--extract-audio", "--audio-format", "mp3", "-o", "%(title)s.%(ext)s"))
+        }
+        args.add(url)
+        val proc = getYTDLBuilder(true, *args.toTypedArray())
+            .directory(output)
+        proc.start()
+            .waitFor()
     }
 
     fun getFormats(url: String): Array<VideoFormat> {
@@ -118,15 +130,13 @@ class YouTubeDownloader {
         var output: File? = null
         private var format: String? = null
         private var downloadRate: String? = null
-        private var videoOnly: Boolean = true
 
         fun output(path: String) : Builder {
             output = File(path)
             return this
         }
 
-        fun format(format: VideoFormat, videoOnly: Boolean = true) : Builder {
-            this.videoOnly = videoOnly
+        fun format(format: VideoFormat) : Builder {
             this.format = format.id
             return this
         }
@@ -148,7 +158,6 @@ class YouTubeDownloader {
          * If you want to add the thumbnail and metadata to the audio file you have to install ffmpeg and atomicparsley
          */
         fun onlyAudio(thumbnail: Boolean = false, metadata: Boolean = false) : Builder {
-            videoOnly = true
             this.format = "bestaudio[ext=m4a]"
 
             if(thumbnail) {
@@ -181,7 +190,7 @@ class YouTubeDownloader {
             }
 
             options += url
-            return YouTubeDownload(options, videoOnly, output!!)
+            return YouTubeDownload(options, output!!)
         }
 
     }
