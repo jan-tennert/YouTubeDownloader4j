@@ -76,7 +76,7 @@ ytdl.getTwitchVideoInfo(url)
 <dependency>
     <groupId>com.github.jan-tennert</groupId>
     <artifactId>YouTubeDownloader4j</artifactId>
-    <version>1.2.1</version>
+    <version>1.3</version>
 </dependency>
 ```
 
@@ -93,6 +93,6 @@ allprojects {
 
 ```gradle
 dependencies {
-     implementation 'com.github.jan-tennert:YouTubeDownloader4j:1.2.1'
+     implementation 'com.github.jan-tennert:YouTubeDownloader4j:1.3'
 }
 ```
