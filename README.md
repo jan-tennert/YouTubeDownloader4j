@@ -32,9 +32,9 @@ YouTubeDownloader.Builder video = new YouTubeDownloader.Builder(url)
            //For the first and second argument you need ffmpeg and atomicparsley.
           .format(format[number]); //Custom format see above
         
- ytdl.downloadVideo(video); //Download the video
+File video = ytdl.downloadVideo(video); //Download the video
         
- ytdl.downloadVideo(video, new DownloadListener() {
+File video = ytdl.downloadVideo(video, new DownloadListener() {
     public void onDownloading(float progress, long eta) {
                 System.out.println("Progress " + progress + "% / ETA: " + eta + "s");
     }
@@ -43,6 +43,13 @@ YouTubeDownloader.Builder video = new YouTubeDownloader.Builder(url)
                 System.out.println("Download finished");
     }
  });
+
+//You can download playlists with
+ytdl.downloadPlaylist("playlist", new File("output/folder"), true /*audioOnly/*)
+
+//If you download videos with a higher resolution you have to download the audio and the video and then merge it with
+File fullvideo = ytdl.mergeVideoAndAudio(audioPath, videoPath, outputVideoPath) //This requires ffmpeg installed on the path or you can set it with
+ytdl.setCustomFFMPEGPath("path")
 ```
 
 # Installation
