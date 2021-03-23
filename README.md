@@ -24,8 +24,7 @@ VideoFormat[] format = ytdl.getFormats(url, false, new Function1<VideoFormat, Bo
 VideoFormat format = ytdl.getFormat(url, "720p", null); //Here you can get first format which has the given resolution and extension (extension is nullable)
 
 YouTubeDownloader.Builder video = new YouTubeDownloader.Builder(url)
-          .directory(new File("/path/to/the/directory")) //optional
-          .fileName("Video.mp4") //optional
+	  .output("path/to/video.mp4") //Required
            //Then one of these three:
           .highestQuality() //This just selects the highest quality + audio. Recommended
           .onlyAudio(false, false) //Use this if you want to download just the audio of the video
